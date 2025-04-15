@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kabadi Tournament - Live Score</title>
+  <style>
+    body {
+      background-color: #EDE8D0;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-y: hidden;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 48px;
+      margin: 20px 0;
+      font-weight: bold;
+    }
+    h2[contenteditable] {
+      outline: none;
+      box-shadow: none;
+      border: none;
+    }
+
+    .main-container {
+      display: flex;
+      height: calc(100vh - 80px);
+      position: relative;
+    }
+
+    .half {
+      width: 50%;
+      padding: 40px 20px;
+      box-sizing: border-box;
+    }
+
+    .team-section {
+      text-align: center;
+    }
+
+    .logo-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 4px solid #000;
+      margin: 0 auto 20px;
+    }
+
+    .logo-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .team-section h2 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .score {
+      font-size: 96px;
+      margin: 0;
+      font-weight: bold;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .buttons button {
+      font-size: 24px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 2px solid black;
+      background: white;
+      cursor: pointer;
+    }
+
+    .center-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 2;
+    }
+
+    .vs {
+      font-size: 48px;
+      margin-bottom: 30px;
+      font-weight: bold;
+    }
+
+    .timers {
+      font-size: 28px;
+      font-weight: bold;
+      background: black;
+      color: white;
+      padding: 10px 20px;
+      margin: 10px auto 5px;
+      display: inline-block;
+      min-width: 120px;
+    }
+
+    .label {
+      font-size: 16px;
+      color: #444;
+      margin-bottom: 10px;
+    }
+
+    .sponsor-banner {
+      width: 100%;
+      height: 100px;
+      background: transparent;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .scrolling-text {
+      display: flex;
+      align-items: center;
+      animation: scrollLeft 25s linear infinite;
+      white-space: nowrap;
+      gap: 40px;
+      padding-left: 100%;
+      font-size: 20px;
+      color: #000;
+      opacity: 0.6;
+      pointer-events: auto;
+    }
+
+    .scrolling-text img {
+      height: 90px;
+      width: auto;
+      opacity: 0.9;
+      mix-blend-mode: multiply;
+      margin-right: 40px;
+    }
+
+    @keyframes scrollLeft {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .blurred .main-container,
+    .blurred .sponsor-banner,
+    .blurred h1 {
+      filter: blur(8px);
+    }
+
+    #doOrDieOverlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle, rgba(0,0,0,0.9) 60%, rgba(0,0,0,1) 100%);
+      color: white;
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      font-size: 120px;
+      font-weight: 900;
+      letter-spacing: 8px;
+      text-align: center;
+      text-transform: uppercase;
+      text-shadow:
+        0 0 10px #ff0000,
+        0 0 20px #ff0000,
+        0 0 40px #ff0000,
+        0 0 80px #ff0000;
+      animation: none;
+      opacity: 0;
+    }
+
+    @keyframes doOrDieIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.6) rotate(-5deg);
+        text-shadow: none;
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.05);
+        text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+      }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes doOrDieOut {
+      0% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(1.1); }
+    }
+
+    @keyframes flickerGlow {
+      0%, 100% { opacity: 1; text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000; }
+      50% { opacity: 0.8; text-shadow: 0 0 2px #ff0000, 0 0 4px #ff0000; }
+      70% { opacity: 1; text-shadow: 0 0 15px #ff0000, 0 0 30px #ff0000; }
+    }
+    .buttons {
+    display: none;
+  }
+  .player-status {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.player-svg {
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+}
+
+.player-svg svg path {
+  transition: fill 0.3s ease;
+}
+over
+  </style>
+</head>
+<body>
+
+  <h1>Kabadi Tournament - Live Score</h1>
+
+  <div class="main-container">
+    <div class="half team-section" id="teamA">
+      <div class="logo-circle">
+        <img src="22.JPG" alt="Team A Logo" />
+      </div>
+      <h2 contenteditable="true" onfocusout="saveTeamName(this)">OCTOBOY</h2>
+      <div class="score" id="scoreA">0</div>
+      <div class="player-status" id="playersA">
+        <div class="player-svg" onclick="toggleSVG(this)">
+          <svg viewBox="0 0 64 64" width="36" height="36" class="active">
+            <path d="M32 2a14 14 0 1 1 0 28 14 14 0 0 1 0-28zm0 32c12.15 0 22 5.82 22 13v7H10v-7c0-7.18 9.85-13 22-13z" fill="green"/>
+          </svg>
+        </div>
+        <div class="player-svg" onclick="toggleSVG(this)">
+          <svg viewBox="0 0 64 64" width="36" height="36" class="active">
+            <path d="M32 2a14 14 0 1 1 0 28 14 14 0 0 1 0-28zm0 32c12.15 0 22 5.82 22 13v7H10v-7c0-7.18 9.85-13 22-13z" fill="green"/>
+          </svg>
+        </div>
+        <div class="player-svg" onclick="toggleSVG(this)">
+          <svg viewBox="0 0 64 64" width="36" height="36" class="active">
+            <path d="M32 2a14 14 0 1 1 0 28 14 14 0 0 1 0-28zm0 32c12.15 0 22 5.82 22 13v7H10v-7c0-7.18 9.85-13 22-13z" fill="green"/>
+          </svg>
+        </div>
+        <div class="player-svg" onclick="toggleSVG(this)">
+          <svg viewBox="0 0 64 64" width="36" height="36" class="active">
+            <path d="M32 2a14 14 0 1 1 0 28 14 14 0 0 1 0-28zm0 32c12.15 0 22 5.82 22 13v7H10v-7c0-7.18 9.85-13 22-13z" fill="green"/>
+          </svg>
+        </div>
+        <div class="player-svg" onclick="toggleSVG(this)">
+          <svg viewBox="0 0 64 64" width="36" height="36" class="active">
+            <path d="M32 2a14 14 0 1 1 0 28 14 14 0 0 1 0-28zm0 32c12.15 0 22 5.82 22 13v7H10v-7c0-7.18 9.85-13 22-13z" fill="green"/>
+          </svg>
+        </div>
+        <div class="player-svg" onclick="toggleSVG(this)">
+          <svg viewBox="0 0 64 64" width="36" height="36" class="active">
+            <path d="M32 2a14 14 0 1 1 0 28 14 14 0 0 1 0-28zm0 32c12.15 0 22 5.82 22 13v7H10v-7c0-7.18 9.85-13 22-13z" fill="green"/>
+          </svg>
+        </div>
+        <div class="player-svg" onclick="toggleSVG(this)">
+          <svg viewBox="0 0 64 64" width="36" height="36" class="active">
+            <path d="M32 2a14 14 0 1 1 0 28 14 14 0 0 1 0-28zm0 32c12.15 0 22 5.82 22 13v7H10v-7c0-7.18 9.85-13 22-13z" fill="green"/>
+          </svg>
+        </div>
+      </div>
+      
+      
+      <div class="buttons">
+        <button onclick="changeScore('A', 1)">+</button>
+        <button onclick="changeScore('A', -1)">−</button>
+      </div>
+    </div>
+
+    <div class="half team-section" id="teamB">
+      <div class="logo-circle">
+        <img src="11.JPG" alt="Team B Logo" />
+      </div>
+      <h2 contenteditable="true" onfocusout="saveTeamName(this)">RACOON</h2>
+      <div class="score" id="scoreB">0</div>
+      <div class="player-status" id="playersA">
+        <div class="player-svg" onclick="toggleSVG(this)">
+          <svg viewBox="0 0 64 64" width="36" height="36" class="active">
+            <path d="M32 2a14 14 0 1 1 0 28 14 14 0 0 1 0-28zm0 32c12.15 0 22 5.82 22 13v7H10v-7c0-7.18 9.85-13 22-13z" fill="green"/>
+          </svg>
+        </div>
+        <div class="player-svg" onclick="toggleSVG(this)">
+          <svg viewBox="0 0 64 64" width="36" height="36" class="active">
+            <path d="M32 2a14 14 0 1 1 0 28 14 14 0 0 1 0-28zm0 32c12.15 0 22 5.82 22 13v7H10v-7c0-7.18 9.85-13 22-13z" fill="green"/>
+          </svg>
+        </div>
+        <div class="player-svg" onclick="toggleSVG(this)">
+          <svg viewBox="0 0 64 64" width="36" height="36" class="active">
+            <path d="M32 2a14 14 0 1 1 0 28 14 14 0 0 1 0-28zm0 32c12.15 0 22 5.82 22 13v7H10v-7c0-7.18 9.85-13 22-13z" fill="green"/>
+          </svg>
+        </div>
+        <div class="player-svg" onclick="toggleSVG(this)">
+          <svg viewBox="0 0 64 64" width="36" height="36" class="active">
+            <path d="M32 2a14 14 0 1 1 0 28 14 14 0 0 1 0-28zm0 32c12.15 0 22 5.82 22 13v7H10v-7c0-7.18 9.85-13 22-13z" fill="green"/>
+          </svg>
+        </div>
+        <div class="player-svg" onclick="toggleSVG(this)">
+          <svg viewBox="0 0 64 64" width="36" height="36" class="active">
+            <path d="M32 2a14 14 0 1 1 0 28 14 14 0 0 1 0-28zm0 32c12.15 0 22 5.82 22 13v7H10v-7c0-7.18 9.85-13 22-13z" fill="green"/>
+          </svg>
+        </div>
+        <div class="player-svg" onclick="toggleSVG(this)">
+          <svg viewBox="0 0 64 64" width="36" height="36" class="active">
+            <path d="M32 2a14 14 0 1 1 0 28 14 14 0 0 1 0-28zm0 32c12.15 0 22 5.82 22 13v7H10v-7c0-7.18 9.85-13 22-13z" fill="green"/>
+          </svg>
+        </div>
+        <div class="player-svg" onclick="toggleSVG(this)">
+          <svg viewBox="0 0 64 64" width="36" height="36" class="active">
+            <path d="M32 2a14 14 0 1 1 0 28 14 14 0 0 1 0-28zm0 32c12.15 0 22 5.82 22 13v7H10v-7c0-7.18 9.85-13 22-13z" fill="green"/>
+          </svg>
+        </div>
+      </div>
+      
+      
+      <div class="buttons">
+        <button onclick="changeScore('B', 1)">+</button>
+        <button onclick="changeScore('B', -1)">−</button>
+      </div>
+    </div>
+
+    <div class="center-overlay">
+      <div class="vs">VS</div>
+      <div class="timers" id="timerMain">30:00</div>
+      <div class="label">Minutes</div>
+      <div class="timers" id="timerShort">30</div>
+      <div class="label">Seconds</div>
+    </div>
+  </div>
+
+  <div class="sponsor-banner">
+    <div class="scrolling-text">
+      <img src="1.png" alt="Sponsor 1">
+      <img src="2.png" alt="Sponsor 2">
+      <img src="3.png" alt="Sponsor 3">
+      <img src="4.png" alt="Sponsor 4">
+      <img src="5.png" alt="Sponsor 5">
+      <img src="6.png" alt="Sponsor 6">
+
+    </div>
+  </div>
+
+  <div id="doOrDieOverlay">DO OR DIE</div>
+  <audio id="doOrDieAudio" src="raid.mp3" preload="auto"></audio>
+
+  <script>
+
+function toggleSVG(el) {
+  const path = el.querySelector('path');
+  path.setAttribute('fill', path.getAttribute('fill') === 'green' ? 'gray' : 'green');
+}
+
+    let scoreA = 0;
+    let scoreB = 0;
+    let mainSeconds = 30 * 60;
+    let mainTimerInterval = null;
+    let mainTimerRunning = false;
+
+    let shortSeconds = 30;
+    let shortTimerInterval = null;
+    let shortTimerRunning = false;
+
+    function changeScore(team, value) {
+      if (team === 'A') {
+        scoreA = Math.max(0, scoreA + value);
+        document.getElementById('scoreA').innerText = scoreA;
+      } else if (team === 'B') {
+        scoreB = Math.max(0, scoreB + value);
+        document.getElementById('scoreB').innerText = scoreB;
+      }
+    }
+
+    function startOrToggleMainTimer() {
+      if (mainTimerRunning) {
+        clearInterval(mainTimerInterval);
+        mainTimerRunning = false;
+      } else {
+        mainTimerInterval = setInterval(() => {
+          let minutes = Math.floor(mainSeconds / 60);
+          let seconds = mainSeconds % 60;
+          document.getElementById('timerMain').innerText =
+            String(minutes).padStart(2, '0') + ":" + String(seconds).padStart(2, '0');
+          if (mainSeconds > 0) mainSeconds--;
+          else {
+            clearInterval(mainTimerInterval);
+            mainTimerRunning = false;
+          }
+        }, 1000);
+        mainTimerRunning = true;
+      }
+    }
+
+    function startAndResetShortTimer() {
+  if (shortTimerRunning) {
+    // Timer is running — stop it and reset
+    clearInterval(shortTimerInterval);
+    shortTimerRunning = false;
+    shortSeconds = 30;
+    document.getElementById('timerShort').innerText = '30';
+    return;
+  }
+
+  // Start the timer
+  shortSeconds = 30;
+  document.getElementById('timerShort').innerText = '30';
+  shortTimerRunning = true;
+
+  shortTimerInterval = setInterval(() => {
+    document.getElementById('timerShort').innerText = String(shortSeconds).padStart(2, '0');
+    if (shortSeconds > 0) {
+      shortSeconds--;
+    } else {
+      clearInterval(shortTimerInterval);
+      shortTimerRunning = false;
+    }
+  }, 1000);
+}
+    function resetAll() {
+      clearInterval(mainTimerInterval);
+      clearInterval(shortTimerInterval);
+      mainSeconds = 30 * 60;
+      shortSeconds = 30;
+      scoreA = 0;
+      scoreB = 0;
+      document.getElementById('scoreA').innerText = scoreA;
+      document.getElementById('scoreB').innerText = scoreB;
+      document.getElementById('timerMain').innerText = '30:00';
+      document.getElementById('timerShort').innerText = '30';
+      mainTimerRunning = false;
+    }
+
+    function saveTeamName(el) {
+      // Custom logic if needed
+    }
+
+    document.addEventListener('keydown', (e) => {
+      switch (e.key.toLowerCase()) {
+        case 'w': changeScore('A', 2); break;
+        case 's': changeScore('A', -2); break;
+        case 'a': changeScore('A', -1); break;
+        case 'd': changeScore('A', 1); break;
+        case 'arrowup': changeScore('B', 2); break;
+        case 'arrowdown': changeScore('B', -2); break;
+        case 'arrowleft': changeScore('B', -1); break;
+        case 'arrowright': changeScore('B', 1); break;
+        case ' ':
+          e.preventDefault();
+          showDoOrDie();
+          break;
+        case 't':
+          startOrToggleMainTimer();
+          break;
+        case 'y':
+          startAndResetShortTimer();
+          break;
+        case 'r':
+          resetAll();
+          break;
+      }
+    });
+
+    function showDoOrDie() {
+      const overlay = document.getElementById('doOrDieOverlay');
+      const audio = document.getElementById('doOrDieAudio');
+      document.body.classList.add('blurred');
+      overlay.style.display = 'flex';
+      overlay.style.animation = 'doOrDieIn 1s ease-out forwards, flickerGlow 1s infinite';
+      audio.currentTime = 0;
+      audio.play();
+      setTimeout(() => {
+        overlay.style.animation = 'doOrDieOut 1s ease-in forwards';
+      }, 4000);
+      setTimeout(() => {
+        overlay.style.display = 'none';
+        overlay.style.animation = 'none';
+        document.body.classList.remove('blurred');
+      }, 5000);
+    }
+  </script>
+</body>
+</html>
