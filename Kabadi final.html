@@ -23,7 +23,11 @@
       box-shadow: none;
       border: none;
     }
-
+    h1[contenteditable] {
+      outline: none;
+      box-shadow: none;
+      border: none;
+    }
     .main-container {
       display: flex;
       height: calc(100vh - 80px);
@@ -87,7 +91,7 @@
 
     .center-overlay {
       position: absolute;
-      top: 50%;
+      top: 20%;
       left: 50%;
       transform: translate(-50%, -50%);
       text-align: center;
@@ -98,25 +102,58 @@
       font-size: 48px;
       margin-bottom: 30px;
       font-weight: bold;
+      display: none;
     }
 
-    .timers {
-      font-size: 28px;
-      font-weight: bold;
-      background: black;
-      color: white;
-      padding: 10px 20px;
-      margin: 10px auto 5px;
-      display: inline-block;
-      min-width: 120px;
+     .timer-block {
+      background: #1e293b;
+      border-radius: 20px;
+      padding: 40px 30px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      width: 250px;
+      border: 2px solid #334155;
+    }
+
+    .timer-block {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 0px 0px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      min-width: 260px;
+    }
+
+    #timerDisplay {
+      font-size: 64px;
+      font-weight: 600;
+      color: #000080;
+      /* text-shadow: 0 0 12px rgba(0, 255, 171, 0.6); */
+      margin-bottom: 15px;
+    }
+
+    #timerLabel {
+      font-size: 18px;
+      letter-spacing: 2px;
+      color: #eeeeee;
+      text-transform: uppercase;
+      opacity: 0.8;
     }
 
     .label {
       font-size: 16px;
-      color: #444;
+      color: black;
       margin-bottom: 10px;
+      text-align: center;
+    margin-top: 5px;
     }
-
+ #timerLabel{
+  margin-bottom:115px;
+  opacity:0;
+ }
     .sponsor-banner {
       width: 100%;
       height: 100px;
@@ -160,8 +197,64 @@
     .blurred .main-container,
     .blurred .sponsor-banner,
     .blurred h1 {
-      filter: blur(8px);
+      filter: blur(2px);
     }
+#superTackleOverlay,
+#superRaidOverlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  justify-content: center;
+  align-items: center;
+  font-size: 120px;
+  font-weight: 900;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  text-align: center;
+  z-index: 9999;
+  animation: none;
+  opacity: 0;
+  pointer-events: none;
+  user-select: none;
+  will-change: opacity;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* Specific styles */
+#superTackleOverlay {
+  background: radial-gradient(circle, rgba(0, 0, 50, 0.9) 60%, rgba(0, 0, 50, 1) 100%);
+  color: #00BFFF;
+  text-shadow:
+    0 0 5px #00BFFF,
+    0 0 15px #00BFFF,
+    0 0 30px #00BFFF;
+}
+
+#superRaidOverlay {
+  background: radial-gradient(circle, rgba(50, 25, 0, 0.9) 60%, rgba(50, 0, 0, 1) 100%);
+  color: #FFA500;
+  text-shadow:
+    0 0 5px #FFA500,
+    0 0 15px #FFA500,
+    0 0 30px #FFA500;
+}
+
+/* Crisp Animations (no scale) */
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes overlayOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes flickerGlow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
 
     #doOrDieOverlay {
       display: none;
@@ -232,17 +325,115 @@
 .player-svg svg path {
   transition: fill 0.3s ease;
 }
-over
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  text-align: center;
+}
+
+.modal-content input {
+  margin: 10px 0;
+  padding: 8px;
+  width: 60px;
+}
+
+.hidden {
+  display: none;
+}
+/* .sponsor-banner {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 10px;
+  background: #f0f0f0;
+} */
+.sponsor-banner img {
+  height: 100px;
+  transition: transform 0.3s;
+}
+.sponsor-banner img:hover {
+  transform: scale(1.1);
+}
+.circle-timer {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: auto;
+}
+.timers {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 70px;
+  font-weight: bold;
+}
+.progress-ring {
+  transform: rotate(-90deg);
+}
+/* .progress-ring__circle {
+  transition: stroke-dashoffset 1s linear;
+  stroke-dasharray: 339.292;
+  stroke-dashoffset: 0;
+} */
+ .progress-ring__circle {
+  stroke-dasharray: 565.48; /* 2 * π * r */
+  stroke-dashoffset: 0;
+  transform: rotate(-360deg);
+  transform-origin: 50% 50%;
+  transition: stroke-dashoffset 0.5s;
+}
+.timer-wrapper{
+  margin-top:20%;
+}
+#timeoutOverlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  justify-content: center;
+  align-items: center;
+  font-size: 120px;
+  font-weight: 900;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  text-align: center;
+  z-index: 9999;
+  animation: none;
+  opacity: 0;
+  pointer-events: none;
+  user-select: none;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.9) 60%, rgba(0, 0, 0, 1) 100%);
+  color: #FF69B4;
+  text-shadow:
+    0 0 5px #FF69B4,
+    0 0 15px #FF69B4,
+    0 0 30px #FF69B4;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
   </style>
+
 </head>
 <body>
 
-  <h1>Kabadi Tournament - Live Score</h1>
+  <h1 contenteditable="true">Kabadi Tournament - Live Score</h1>
 
   <div class="main-container">
     <div class="half team-section" id="teamA">
       <div class="logo-circle">
-        <img src="22.jpg" alt="Team A Logo" />
+        <img src="22.jpg" id="teamAlogo" alt="Team A Logo" />
       </div>
       <h2 contenteditable="true" onfocusout="saveTeamName(this)">OCTOBOY</h2>
       <div class="score" id="scoreA">0</div>
@@ -290,10 +481,18 @@ over
         <button onclick="changeScore('A', -1)">−</button>
       </div>
     </div>
-
+    <div class="timer-wrapper">
+  <div class="circle-timer">
+    <svg class="progress-ring" width="200" height="200">
+      <circle class="progress-ring__circle" stroke="green" stroke-width="20" fill="transparent" r="90" cx="100" cy="100"></circle>
+    </svg>
+    <div class="timers" id="timerShort">30</div>
+  </div>
+  <div class="label">Seconds</div>
+</div>
     <div class="half team-section" id="teamB">
       <div class="logo-circle">
-        <img src="11.jpg" alt="Team B Logo" />
+        <img src="11.jpg" id="teamBlogo" alt="Team B Logo" />
       </div>
       <h2 contenteditable="true" onfocusout="saveTeamName(this)">RACOON</h2>
       <div class="score" id="scoreB">0</div>
@@ -342,16 +541,17 @@ over
       </div>
     </div>
 
-    <div class="center-overlay">
-      <div class="vs">VS</div>
-      <div class="timers" id="timerMain">30:00</div>
-      <div class="label">Minutes</div>
-      <div class="timers" id="timerShort">30</div>
-      <div class="label">Seconds</div>
-    </div>
-  </div>
+   <div class="center-overlay">
+  <div class="vs">VS</div>
 
-  <div class="sponsor-banner">
+  <div class="timer-block">
+    <div class="timers" id="timerDisplay">30:00</div>
+    <div class="label" id="timerLabel">Minutes</div>
+  </div>
+</div>
+
+
+  <!-- <div class="sponsor-banner">
     <div class="scrolling-text">
       <img src="1.png" alt="Sponsor 1">
       <img src="2.png" alt="Sponsor 2">
@@ -361,75 +561,240 @@ over
       <img src="6.png" alt="Sponsor 6">
 
     </div>
+  </div> -->
+  <div class="sponsor-banner">
+    <div class="scrolling-text" id="sponsorBannerContainer"></div>
   </div>
 
   <div id="doOrDieOverlay">DO OR DIE</div>
   <audio id="doOrDieAudio" src="raid.mp3" preload="auto"></audio>
+  <div id="superTackleOverlay">SUPER TACKLE</div>
+<!-- <audio id="superTackleAudio" src="super_tackle.mp3"></audio> -->
 
-  <script>
+<!-- SUPER RAID -->
+<div id="superRaidOverlay">SUPER RAID</div>
+<!-- <audio id="superRaidAudio" src="super_raid.mp3"></audio> -->
+ <div id="timeoutOverlay">TIME OUT</div>
+<!-- <audio id="timeoutAudio" src="timeout.mp3"></audio> -->
+  <!-- Modal Overlay --> 
+<div id="menuModal" class="modal-overlay hidden">
+  <div class="modal-content">
+    <h2>Menu</h2>
+    <label for="timerInput">Set Match Timer (minutes):</label>
+    <input type="number" id="timerInput" min="1" value="30" />
+    <button id="saveTimer">Save</button>
+    <button id="closeModal">Close</button>
 
-function toggleSVG(el) {
-  const path = el.querySelector('path');
-  path.setAttribute('fill', path.getAttribute('fill') === 'green' ? 'gray' : 'green');
+    
+    <button onclick="document.getElementById('teamAFileInput').click()" style="
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  text-align: center;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+">
+  Team A Logo
+</button>
+
+    <button onclick="document.getElementById('teamBFileInput').click()" style="
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  text-align: center;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+">
+  Team B Logo
+</button>
+
+ <button style="
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  text-align: center;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+" class="menu-item" onclick="document.getElementById('sponsorFileInput').click()">
+  <i class="fas fa-image"></i> Change Sponsor Banner
+ </button>
+  </div>
+  <input type="file" id="sponsorFileInput" accept="image/*" multiple style="display:none" onchange="updateSponsorBanner(this)">
+  <input type="file" id="teamAFileInput" accept="image/*" style="display:none" onchange="changeLogo(event, 'teamAlogo')">
+<input type="file" id="teamBFileInput" accept="image/*" style="display:none" onchange="changeLogo(event, 'teamBlogo')">
+</div>
+
+<script>
+  function updateSponsorBanner(input) {
+  const container = document.getElementById("sponsorBannerContainer");
+  container.innerHTML = ""; // clear existing images
+
+  const files = input.files;
+  for (let i = 0; i < files.length; i++) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const img = document.createElement("img");
+      img.src = e.target.result;
+      img.style.height = "100px"; // Adjust height as needed
+      img.style.margin = "0 10px";
+      container.appendChild(img);
+    };
+    reader.readAsDataURL(files[i]);
+  }
 }
+  function changeLogo(event, logoId) {
+  const file = event.target.files[0];
+  if (file && file.type.startsWith('image/')) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById(logoId).src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  } else {
+    alert("Please select a valid image file.");
+  }
+}
+  function toggleSVG(el) {
+    const path = el.querySelector('path');
+    path.setAttribute('fill', path.getAttribute('fill') === 'green' ? 'red' : 'green');
+  }
 
-    let scoreA = 0;
-    let scoreB = 0;
-    let mainSeconds = 30 * 60;
-    let mainTimerInterval = null;
-    let mainTimerRunning = false;
+  let scoreA = 0;
+  let scoreB = 0;
+  let timerMinutes = 30;
+  let mainSeconds = timerMinutes * 60;
+  let mainTimerRunning = false;
+  let mainTimerInterval = null;
 
-    let shortSeconds = 30;
-    let shortTimerInterval = null;
-    let shortTimerRunning = false;
+  function updateMainTimerDisplay() {
+    const minutes = Math.floor(mainSeconds / 60);
+    const seconds = mainSeconds % 60;
+    document.getElementById('timerDisplay').innerText =
+      String(minutes).padStart(2, '0') + ":" + String(seconds).padStart(2, '0');
+  }
 
-    function changeScore(team, value) {
-      if (team === 'A') {
-        scoreA = Math.max(0, scoreA + value);
-        document.getElementById('scoreA').innerText = scoreA;
-      } else if (team === 'B') {
-        scoreB = Math.max(0, scoreB + value);
-        document.getElementById('scoreB').innerText = scoreB;
-      }
+  function startOrToggleMainTimer() {
+    if (mainTimerRunning) {
+      console.log("Timer paused");
+      clearInterval(mainTimerInterval);
+      mainTimerRunning = false;
+    } else {
+      console.log("Timer started");
+      mainTimerInterval = setInterval(() => {
+        if (mainSeconds > 0) {
+          mainSeconds--;
+          updateMainTimerDisplay();
+        } else {
+          clearInterval(mainTimerInterval);
+          mainTimerRunning = false;
+        }
+      }, 1000);
+      mainTimerRunning = true;
     }
+  }
 
-    function startOrToggleMainTimer() {
-      if (mainTimerRunning) {
+  function resetTimer() {
+    clearInterval(mainTimerInterval);
+    mainSeconds = timerMinutes * 60;
+    updateMainTimerDisplay();
+    mainTimerRunning = false;
+  }
+
+  function updateTimerDisplay() {
+    const minutes = Math.floor(mainSeconds / 60);
+    const seconds = mainSeconds % 60;
+    document.getElementById('timerDisplay').textContent =
+      `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }
+
+  let shortSeconds = 30;
+  let shortTimerInterval = null;
+  let shortTimerRunning = false;
+  const FULL_DASH_ARRAY = 565.48;
+  const circle = document.querySelector('.progress-ring__circle');
+  // function startAndResetShortTimer() {
+  //   if (shortTimerRunning) {
+  //     clearInterval(shortTimerInterval);
+  //     shortTimerRunning = false;
+  //     shortSeconds = 30;
+  //     document.getElementById('timerShort').innerText = '30';
+  //     return;
+  //   }
+
+  //   shortSeconds = 30;
+  //   document.getElementById('timerShort').innerText = '30';
+  //   shortTimerRunning = true;
+
+  //   shortTimerInterval = setInterval(() => {
+  //     document.getElementById('timerShort').innerText = String(shortSeconds).padStart(2, '0');
+  //     if (shortSeconds > 0) {
+  //       shortSeconds--;
+  //     } else {
+  //       clearInterval(shortTimerInterval);
+  //       shortTimerRunning = false;
+  //     }
+  //   }, 1000);
+  // }
+  function startOrToggleMainTimer() {
+  if (mainTimerRunning) {
+    console.log("Timer paused");
+    clearInterval(mainTimerInterval);
+    mainTimerRunning = false;
+  } else {
+    console.log("Timer started");
+    mainTimerInterval = setInterval(() => {
+      if (mainSeconds > 0) {
+        mainSeconds--;
+        updateMainTimerDisplay();
+      } else {
         clearInterval(mainTimerInterval);
         mainTimerRunning = false;
-      } else {
-        mainTimerInterval = setInterval(() => {
-          let minutes = Math.floor(mainSeconds / 60);
-          let seconds = mainSeconds % 60;
-          document.getElementById('timerMain').innerText =
-            String(minutes).padStart(2, '0') + ":" + String(seconds).padStart(2, '0');
-          if (mainSeconds > 0) mainSeconds--;
-          else {
-            clearInterval(mainTimerInterval);
-            mainTimerRunning = false;
-          }
-        }, 1000);
-        mainTimerRunning = true;
+        showOverlay('timeoutOverlay', 'timeoutAudio'); // Show TIME OUT modal
       }
-    }
+    }, 1000);
+    mainTimerRunning = true;
+  }
+}
 
-    function startAndResetShortTimer() {
+  function startAndResetShortTimer() {
   if (shortTimerRunning) {
-    // Timer is running — stop it and reset
     clearInterval(shortTimerInterval);
     shortTimerRunning = false;
     shortSeconds = 30;
     document.getElementById('timerShort').innerText = '30';
+    resetCircle();
     return;
   }
 
-  // Start the timer
   shortSeconds = 30;
   document.getElementById('timerShort').innerText = '30';
   shortTimerRunning = true;
+  updateCircle(shortSeconds);
 
   shortTimerInterval = setInterval(() => {
     document.getElementById('timerShort').innerText = String(shortSeconds).padStart(2, '0');
+
+    if (shortSeconds <= 10) {
+      playCountdownSound(shortSeconds); // Placeholder
+    }
+
+    updateCircle(shortSeconds);
+
     if (shortSeconds > 0) {
       shortSeconds--;
     } else {
@@ -438,67 +803,175 @@ function toggleSVG(el) {
     }
   }, 1000);
 }
-    function resetAll() {
-      clearInterval(mainTimerInterval);
-      clearInterval(shortTimerInterval);
-      mainSeconds = 30 * 60;
-      shortSeconds = 30;
-      scoreA = 0;
-      scoreB = 0;
+
+function updateCircle(time) {
+  const offset = FULL_DASH_ARRAY * (1 - time / 30);
+  circle.style.strokeDashoffset = offset;
+
+  if (time > 20) {
+    circle.style.stroke = 'green';
+  } else if (time > 10) {
+    circle.style.stroke = 'orange';
+  } else {
+    circle.style.stroke = 'red';
+  }
+}
+
+function resetCircle() {
+  circle.style.strokeDashoffset = 0;
+  circle.style.stroke = 'green';
+}
+
+function playCountdownSound(sec) {
+  const soundUrls = {
+    10: 'sounds/10.mp3',
+    9: 'sounds/9.mp3',
+    8: 'sounds/8.mp3',
+    7: 'sounds/7.mp3',
+    6: 'sounds/6.mp3',
+    5: 'sounds/5.mp3',
+    4: 'sounds/4.mp3',
+    3: 'sounds/3.mp3',
+    2: 'sounds/2.mp3',
+    1: 'sounds/1.mp3'
+  };
+  if (soundUrls[sec]) {
+    const audio = new Audio(soundUrls[sec]);
+    audio.play();
+  }
+}
+
+  function changeScore(team, value) {
+    if (team === 'A') {
+      scoreA = Math.max(0, scoreA + value);
       document.getElementById('scoreA').innerText = scoreA;
+    } else if (team === 'B') {
+      scoreB = Math.max(0, scoreB + value);
       document.getElementById('scoreB').innerText = scoreB;
-      document.getElementById('timerMain').innerText = '30:00';
-      document.getElementById('timerShort').innerText = '30';
-      mainTimerRunning = false;
     }
+  }
 
-    function saveTeamName(el) {
-      // Custom logic if needed
+  function resetAll() {
+    clearInterval(mainTimerInterval);
+    clearInterval(shortTimerInterval);
+    mainSeconds = timerMinutes * 60;
+    shortSeconds = 30;
+    scoreA = 0;
+    scoreB = 0;
+    document.getElementById('scoreA').innerText = scoreA;
+    document.getElementById('scoreB').innerText = scoreB;
+    updateMainTimerDisplay();
+    document.getElementById('timerShort').innerText = '30';
+    mainTimerRunning = false;
+    shortTimerRunning = false;
+  }
+
+  function saveTeamName(el) {
+    // Add logic if necessary
+  }
+
+  function showDoOrDie() {
+    const overlay = document.getElementById('doOrDieOverlay');
+    const audio = document.getElementById('doOrDieAudio');
+    document.body.classList.add('blurred');
+    overlay.style.display = 'flex';
+    overlay.style.animation = 'doOrDieIn 1s ease-out forwards, flickerGlow 1s infinite';
+    audio.currentTime = 0;
+    audio.play();
+    setTimeout(() => {
+      overlay.style.animation = 'doOrDieOut 1s ease-in forwards';
+    }, 4000);
+    setTimeout(() => {
+      overlay.style.display = 'none';
+      overlay.style.animation = 'none';
+      document.body.classList.remove('blurred');
+    }, 5000);
+  }
+
+  // Modal functions
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'm' || e.key === 'M') {
+      document.getElementById('menuModal').classList.remove('hidden');
+      document.getElementById('timerInput').value = timerMinutes;
     }
+  });
 
-    document.addEventListener('keydown', (e) => {
-      switch (e.key.toLowerCase()) {
-        case 'w': changeScore('A', 2); break;
-        case 's': changeScore('A', -2); break;
-        case 'a': changeScore('A', -1); break;
-        case 'd': changeScore('A', 1); break;
-        case 'arrowup': changeScore('B', 2); break;
-        case 'arrowdown': changeScore('B', -2); break;
-        case 'arrowleft': changeScore('B', -1); break;
-        case 'arrowright': changeScore('B', 1); break;
-        case ' ':
-          e.preventDefault();
-          showDoOrDie();
-          break;
-        case 't':
-          startOrToggleMainTimer();
-          break;
-        case 'y':
-          startAndResetShortTimer();
-          break;
-        case 'r':
-          resetAll();
-          break;
-      }
-    });
+  document.getElementById('closeModal').addEventListener('click', function () {
+    document.getElementById('menuModal').classList.add('hidden');
+  });
 
-    function showDoOrDie() {
-      const overlay = document.getElementById('doOrDieOverlay');
-      const audio = document.getElementById('doOrDieAudio');
-      document.body.classList.add('blurred');
-      overlay.style.display = 'flex';
-      overlay.style.animation = 'doOrDieIn 1s ease-out forwards, flickerGlow 1s infinite';
-      audio.currentTime = 0;
-      audio.play();
-      setTimeout(() => {
-        overlay.style.animation = 'doOrDieOut 1s ease-in forwards';
-      }, 4000);
-      setTimeout(() => {
-        overlay.style.display = 'none';
-        overlay.style.animation = 'none';
-        document.body.classList.remove('blurred');
-      }, 5000);
+  document.getElementById('saveTimer').addEventListener('click', function () {
+    const newMinutes = parseInt(document.getElementById('timerInput').value);
+    if (!isNaN(newMinutes) && newMinutes > 0) {
+      timerMinutes = newMinutes;
+      mainSeconds = timerMinutes * 60;
+      updateMainTimerDisplay();
+      resetTimer();
+      document.getElementById('menuModal').classList.add('hidden');
     }
-  </script>
+  });
+
+  // Unified key handler
+  document.addEventListener('keydown', (e) => {
+    if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
+    switch (e.key.toLowerCase()) {
+      case 'w': changeScore('A', 2); break;
+      case 's': changeScore('A', -2); break;
+      case 'a': changeScore('A', -1); break;
+      case 'd': changeScore('A', 1); break;
+      case 'arrowup': changeScore('B', 2); break;
+      case 'arrowdown': changeScore('B', -2); break;
+      case 'arrowleft': changeScore('B', -1); break;
+      case 'arrowright': changeScore('B', 1); break;
+      case ' ': e.preventDefault(); showDoOrDie(); break;
+      case 't': console.log('T pressed'); startOrToggleMainTimer(); break;
+      case 'y': startAndResetShortTimer(); break;
+      case 'r': resetAll(); break;
+    }
+  });
+
+  // Only update the timer on page load — no start
+  window.onload = () => {
+    updateMainTimerDisplay();
+    document.getElementById('timerShort').innerText = '30';
+  };
+  document.addEventListener('keydown', function (e) {
+   if (e.code === 'KeyP') {
+    showOverlay('superTackleOverlay', 'superTackleAudio');
+  } else if (e.code === 'KeyO') {
+    showOverlay('superRaidOverlay', 'superRaidAudio');
+  }
+});
+function showOverlay(overlayId, audioId) {
+  const overlay = document.getElementById(overlayId);
+  const audio = document.getElementById(audioId);
+
+  // Prepare
+  overlay.style.display = 'flex';
+  overlay.style.animation = 'overlayIn 1s ease-out forwards, flickerGlow 1s infinite';
+  document.body.classList.add('blurred');
+
+  // Play sound
+  if (audio) {
+    audio.currentTime = 0;
+    audio.play();
+  }
+
+  // Start hide after 4 seconds
+  setTimeout(() => {
+    overlay.style.animation = 'overlayOut 1s ease-in forwards';
+  }, 4000);
+
+  // Fully hide after 5 seconds
+  setTimeout(() => {
+    overlay.style.display = 'none';
+    overlay.style.animation = 'none';
+    document.body.classList.remove('blurred');
+  }, 5000);
+}
+</script>
+
+  
+
 </body>
 </html>
