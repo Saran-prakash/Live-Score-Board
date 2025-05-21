@@ -43,6 +43,7 @@
     .team-section {
       text-align: center;
     }
+    
 
     .logo-circle {
       width: 120px;
@@ -105,34 +106,17 @@
       display: none;
     }
 
-     .timer-block {
-      background: #1e293b;
-      border-radius: 20px;
-      padding: 40px 30px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-      text-align: center;
-      width: 250px;
-      border: 2px solid #334155;
-    }
-
-    .timer-block {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-radius: 20px;
-      padding: 0px 0px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-      text-align: center;
-      min-width: 260px;
-    }
+     
 
     #timerDisplay {
       font-size: 64px;
       font-weight: 600;
       color: #000080;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       /* text-shadow: 0 0 12px rgba(0, 255, 171, 0.6); */
       margin-bottom: 15px;
+      border-radius: 10px;
+      padding: 5px;
     }
 
     #timerLabel {
@@ -428,15 +412,19 @@
 </head>
 <body>
 
-  <h1 contenteditable="true">Kabadi Tournament - Live Score</h1>
+  <h1 id="liveScoreTitle">Kabadi Tournament - Live Score</h1>
 
   <div class="main-container">
     <div class="half team-section" id="teamA">
       <div class="logo-circle">
         <img src="22.jpg" id="teamAlogo" alt="Team A Logo" />
       </div>
-      <h2 contenteditable="true" onfocusout="saveTeamName(this)">OCTOBOY</h2>
-      <div class="score" id="scoreA">0</div>
+      <!-- <h2 contenteditable="true" onfocusout="saveTeamName(this)">OCTOBOY</h2> -->
+       <h2 id="teamANameDisplay">OCTOBOY</h2>
+      <!-- <div class="score" id="scoreA">0</div> -->
+       <div style="display: flex;justify-content: center;align-items: center;">
+    <div class="score" id="scoreA" style="width: 150px; text-align: center; border-radius: 10px;">0</div>
+      </div>
       <div class="player-status" id="playersA">
         <div class="player-svg" onclick="toggleSVG(this)">
           <svg viewBox="0 0 64 64" width="36" height="36" class="active">
@@ -488,14 +476,18 @@
     </svg>
     <div class="timers" id="timerShort">30</div>
   </div>
-  <div class="label">Seconds</div>
+  <!-- <div class="label">Seconds</div> -->
 </div>
     <div class="half team-section" id="teamB">
       <div class="logo-circle">
         <img src="11.jpg" id="teamBlogo" alt="Team B Logo" />
       </div>
-      <h2 contenteditable="true" onfocusout="saveTeamName(this)">RACOON</h2>
-      <div class="score" id="scoreB">0</div>
+      <!-- <h2 contenteditable="true" onfocusout="saveTeamName(this)">RACOON</h2> -->
+       <h2 id="teamBNameDisplay">RACOON</h2>
+      <!-- <div class="score" id="scoreB">0</div> -->
+      <div style="display: flex;justify-content: center;align-items: center;">
+    <div class="score" id="scoreB" style="width: 150PX; text-align: center; border-radius: 10px;">0</div>
+</div>
       <div class="player-status" id="playersA">
         <div class="player-svg" onclick="toggleSVG(this)">
           <svg viewBox="0 0 64 64" width="36" height="36" class="active">
@@ -580,15 +572,25 @@
 <div id="menuModal" class="modal-overlay hidden">
   <div class="modal-content">
     <h2>Menu</h2>
-    <label for="timerInput">Set Match Timer (minutes):</label>
+    <label for="tournamentTitle">Title:</label>
+    <input type="text" id="tournamentTitle" value="Kabadi Tournament - Live Score" />
+    <button id="saveTitle">Save</button>
+    <label for="teamAName">Team A:</label>
+    <input type="text" id="teamAName" value="" />
+    <button id="saveTeamAName">Save</button>
+
+    <!-- Edit Team B Name -->
+    <label for="teamBName">Team B:</label>
+    <input type="text" id="teamBName" value="" />
+    <button id="saveTeamBName">Save</button
+    <label for="timerInput">Match Timer(M):</label>
     <input type="number" id="timerInput" min="1" value="30" />
     <button id="saveTimer">Save</button>
     <button id="closeModal">Close</button>
 
-    
+    <div style="display: flex;justify-content: space-evenly;">
     <button onclick="document.getElementById('teamAFileInput').click()" style="
   display: block;
-  width: 100%;
   padding: 10px 15px;
   background-color: #007BFF;
   color: white;
@@ -604,7 +606,6 @@
 
     <button onclick="document.getElementById('teamBFileInput').click()" style="
   display: block;
-  width: 100%;
   padding: 10px 15px;
   background-color: #007BFF;
   color: white;
@@ -620,7 +621,6 @@
 
  <button style="
   display: block;
-  width: 100%;
   padding: 10px 15px;
   background-color: #007BFF;
   color: white;
@@ -631,8 +631,17 @@
   border-radius: 5px;
   margin-bottom: 10px;
 " class="menu-item" onclick="document.getElementById('sponsorFileInput').click()">
-  <i class="fas fa-image"></i> Change Sponsor Banner
+  <i class="fas fa-image"></i> Sponsor Banner
  </button>
+ </div>
+ <!-- Color Picker for Score A -->
+    <label for="scoreAColor">Team A:</label>
+    <input type="color" id="scoreAColor" value="#007BFF" onchange="changeScoreColor('scoreA', this.value)" />
+
+    <!-- Color Picker for Score B -->
+    <label for="scoreBColor">Team B:</label>
+    <input type="color" id="scoreBColor" value="#007BFF" onchange="changeScoreColor('scoreB', this.value)" />
+  
   </div>
   <input type="file" id="sponsorFileInput" accept="image/*" multiple style="display:none" onchange="updateSponsorBanner(this)">
   <input type="file" id="teamAFileInput" accept="image/*" style="display:none" onchange="changeLogo(event, 'teamAlogo')">
@@ -640,6 +649,9 @@
 </div>
 
 <script>
+  function changeScoreColor(scoreId, color) {
+    document.getElementById(scoreId).style.backgroundColor = color;
+  }
   function updateSponsorBanner(input) {
   const container = document.getElementById("sponsorBannerContainer");
   container.innerHTML = ""; // clear existing images
@@ -669,6 +681,25 @@
     alert("Please select a valid image file.");
   }
 }
+ document.getElementById('saveTitle').addEventListener('click', function() {
+    var newTitle = document.getElementById('tournamentTitle').value;
+    document.getElementById('liveScoreTitle').textContent = newTitle;
+  });
+
+  // Function to change the background color of the score elements
+  function changeScoreColor(scoreId, color) {
+    document.getElementById(scoreId).style.backgroundColor = color;
+  }
+   document.getElementById('saveTeamAName').addEventListener('click', function() {
+    var newTeamAName = document.getElementById('teamAName').value;
+    document.getElementById('teamANameDisplay').textContent = newTeamAName;
+  });
+
+  // Function to save the Team B name
+  document.getElementById('saveTeamBName').addEventListener('click', function() {
+    var newTeamBName = document.getElementById('teamBName').value;
+    document.getElementById('teamBNameDisplay').textContent = newTeamBName;
+  });
   function toggleSVG(el) {
     const path = el.querySelector('path');
     path.setAttribute('fill', path.getAttribute('fill') === 'green' ? 'red' : 'green');
@@ -782,26 +813,36 @@
   }
 
   shortSeconds = 30;
-  document.getElementById('timerShort').innerText = '30';
   shortTimerRunning = true;
-  updateCircle(shortSeconds);
+
+  // First update
+  updateTimerUI();
 
   shortTimerInterval = setInterval(() => {
-    document.getElementById('timerShort').innerText = String(shortSeconds).padStart(2, '0');
+    shortSeconds--;
 
-    if (shortSeconds <= 10) {
-      playCountdownSound(shortSeconds); // Placeholder
+    updateTimerUI();
+
+    // 🔊 Play audio ONCE when timer hits exactly 10
+    if (shortSeconds === 11) {
+      playCountdownSound();
     }
 
-    updateCircle(shortSeconds);
-
-    if (shortSeconds > 0) {
-      shortSeconds--;
-    } else {
+    if (shortSeconds <= 0) {
       clearInterval(shortTimerInterval);
       shortTimerRunning = false;
     }
   }, 1000);
+}
+
+function updateTimerUI() {
+  document.getElementById('timerShort').innerText = String(shortSeconds).padStart(2, '0');
+  updateCircle(shortSeconds);
+}
+
+function playCountdownSound() {
+  const audio = new Audio('timersecond.mp3');
+  audio.play();
 }
 
 function updateCircle(time) {
@@ -822,24 +863,7 @@ function resetCircle() {
   circle.style.stroke = 'green';
 }
 
-function playCountdownSound(sec) {
-  const soundUrls = {
-    10: 'sounds/10.mp3',
-    9: 'sounds/9.mp3',
-    8: 'sounds/8.mp3',
-    7: 'sounds/7.mp3',
-    6: 'sounds/6.mp3',
-    5: 'sounds/5.mp3',
-    4: 'sounds/4.mp3',
-    3: 'sounds/3.mp3',
-    2: 'sounds/2.mp3',
-    1: 'sounds/1.mp3'
-  };
-  if (soundUrls[sec]) {
-    const audio = new Audio(soundUrls[sec]);
-    audio.play();
-  }
-}
+
 
   function changeScore(team, value) {
     if (team === 'A') {
@@ -913,22 +937,30 @@ function playCountdownSound(sec) {
 
   // Unified key handler
   document.addEventListener('keydown', (e) => {
-    if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
-    switch (e.key.toLowerCase()) {
-      case 'w': changeScore('A', 2); break;
-      case 's': changeScore('A', -2); break;
-      case 'a': changeScore('A', -1); break;
-      case 'd': changeScore('A', 1); break;
-      case 'arrowup': changeScore('B', 2); break;
-      case 'arrowdown': changeScore('B', -2); break;
-      case 'arrowleft': changeScore('B', -1); break;
-      case 'arrowright': changeScore('B', 1); break;
-      case ' ': e.preventDefault(); showDoOrDie(); break;
-      case 't': console.log('T pressed'); startOrToggleMainTimer(); break;
-      case 'y': startAndResetShortTimer(); break;
-      case 'r': resetAll(); break;
-    }
-  });
+  // Check if the menu modal is open
+  if (!document.getElementById('menuModal').classList.contains('hidden')) {
+    return; // Don't allow key functions to execute if the modal is open
+  }
+
+  // If modal is not open, execute the functions
+  if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return; // Ignore keys in input or textarea
+
+  switch (e.key.toLowerCase()) {
+    case 'w': changeScore('A', 2); break;
+    case 's': changeScore('A', -2); break;
+    case 'a': changeScore('A', -1); break;
+    case 'd': changeScore('A', 1); break;
+    case 'arrowup': changeScore('B', 2); break;
+    case 'arrowdown': changeScore('B', -2); break;
+    case 'arrowleft': changeScore('B', -1); break;
+    case 'arrowright': changeScore('B', 1); break;
+    case ' ': e.preventDefault(); showDoOrDie(); break;
+    case 't': console.log('T pressed'); startOrToggleMainTimer(); break;
+    case 'y': startAndResetShortTimer(); break;
+    case 'r': resetAll(); break;
+  }
+});
+
 
   // Only update the timer on page load — no start
   window.onload = () => {
@@ -936,6 +968,9 @@ function playCountdownSound(sec) {
     document.getElementById('timerShort').innerText = '30';
   };
   document.addEventListener('keydown', function (e) {
+     if (!document.getElementById('menuModal').classList.contains('hidden')) {
+    return; // Don't allow key functions to execute if the modal is open
+  }
    if (e.code === 'KeyP') {
     showOverlay('superTackleOverlay', 'superTackleAudio');
   } else if (e.code === 'KeyO') {
